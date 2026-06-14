@@ -6,30 +6,23 @@ import shutil
 import subprocess
 import time
 import uuid
-import boto3
-import cv2
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-import ffmpegcv
 import modal
-import numpy as np
 from pydantic import BaseModel
 import os
-from google import genai
-
-import pysubs2
-from tqdm import tqdm
-import whisperx
 
 
 class ProcessVideoRequest(BaseModel):
     s3_key: str
 
 
-image = (modal.Image.from_registry(
-    "nvidia/cuda:12.4.0-devel-ubuntu22.04", add_python="3.11")
-    .apt_install(["ffmpeg", "libgl1-mesa-glx", "wget", "libcudnn8", "libcudnn8-dev", "pkg-config", "libavformat-dev", "libavcodec-dev", "libavdevice-dev", "libavutil-dev", "libswscale-dev", "libswresample-dev", "libavfilter-dev", "clang", "build-essential", "gcc", "git"])
-    .pip_install_from_requirements("requirements.txt")
+image = (modal.Image.debian_slim(python_version="3.11")
+    .apt_install(["ffmpeg", "libgl1-mesa-glx", "wget", "git", "build-essential", "gcc"])
+    .pip_install(["numpy==1.26.4", "setuptools", "wheel"])
+    .pip_install(["torch==2.0.1", "torchaudio==2.0.2", "torchvision==0.15.2"], extra_options="--index-url https://download.pytorch.org/whl/cu118")
+    .run_commands(["pip install --no-build-isolation 'whisperx @ git+https://github.com/m-bain/whisperx.git'"])
+    .pip_install_from_requirements("requirements.txt", extra_options="--use-deprecated=legacy-resolver")
     .run_commands([
         "mkdir -p /usr/share/fonts/truetype/custom",
         "wget -O /usr/share/fonts/truetype/custom/Anton-Regular.ttf https://github.com/google/fonts/raw/main/ofl/anton/Anton-Regular.ttf",
@@ -49,6 +42,11 @@ auth_scheme = HTTPBearer()
 
 
 def create_vertical_video(tracks, scores, pyframes_path, pyavi_path, audio_path, output_path, framerate=25):
+    import cv2
+    import ffmpegcv
+    import numpy as np
+    from tqdm import tqdm
+
     target_width = 1080
     target_height = 1920
 
@@ -150,6 +148,8 @@ def create_vertical_video(tracks, scores, pyframes_path, pyavi_path, audio_path,
 
 
 def create_subtitles_with_ffmpeg(transcript_segments: list, clip_start: float, clip_end: float, clip_video_path: str, output_path: str, max_words: int = 5):
+    import pysubs2
+
     temp_dir = os.path.dirname(output_path)
     subtitle_path = os.path.join(temp_dir, "temp_subtitles.ass")
 
@@ -301,6 +301,8 @@ def process_clip(base_dir: str, original_video_path: str, s3_key: str, start_tim
     create_subtitles_with_ffmpeg(transcript_segments, start_time,
                                  end_time, vertical_mp4_path, subtitle_output_path, max_words=5)
 
+    import boto3
+
     s3_client = boto3.client("s3")
     s3_client.upload_file(
         subtitle_output_path, os.environ["S3_BUCKET_NAME"], output_s3_key)
@@ -310,6 +312,9 @@ def process_clip(base_dir: str, original_video_path: str, s3_key: str, start_tim
 class AiPodcastClipper:
     @modal.enter()
     def load_model(self):
+        import whisperx
+        from google import genai
+
         print("Loading models")
 
         self.whisperx_model = whisperx.load_model(
@@ -327,6 +332,8 @@ class AiPodcastClipper:
         print("Created gemini client...")
 
     def transcribe_video(self, base_dir: str, video_path: str) -> str:
+        import whisperx
+
         audio_path = base_dir / "audio.wav"
         extract_cmd = f"ffmpeg -i {video_path} -vn -acodec pcm_s16le -ar 16000 -ac 1 {audio_path}"
         subprocess.run(extract_cmd, shell=True,
@@ -403,6 +410,8 @@ class AiPodcastClipper:
         base_dir.mkdir(parents=True, exist_ok=True)
 
         # Download video file
+        import boto3
+
         video_path = base_dir / "input.mp4"
         s3_client = boto3.client("s3")
         s3_client.download_file(os.environ["S3_BUCKET_NAME"], s3_key, str(video_path))
