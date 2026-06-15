@@ -14,9 +14,10 @@ export const processVideo = inngest.createFunction(
   },
   { event: "process-video-events" },
   async ({ event, step }) => {
-    const { uploadedFileId } = event.data as {
+    const { uploadedFileId, youtubeUrl } = event.data as {
       uploadedFileId: string;
       userId: string;
+      youtubeUrl?: string;
     };
 
     try {
