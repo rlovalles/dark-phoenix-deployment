@@ -84,12 +84,11 @@ export async function processYoutubeUrl(youtubeUrl: string) {
 
   const uploadedFile = await db.uploadedFile.create({
     data: {
-      filename: youtubeUrl,
+      displayName: youtubeUrl,
       s3Key: "",
       userId: session.user.id,
       status: "queued",
       uploaded: false,
-      youtubeUrl: youtubeUrl,
     },
   });
 
