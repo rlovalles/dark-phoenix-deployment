@@ -301,11 +301,21 @@ def process_clip(base_dir: str, original_video_path: str, s3_key: str, start_tim
     create_subtitles_with_ffmpeg(transcript_segments, start_time,
                                  end_time, vertical_mp4_path, subtitle_output_path, max_words=5)
 
+    watermark_output_path = clip_dir / "pyavi" / "video_with_watermark.mp4"
+    ffmpeg_watermark_cmd = (
+        f"ffmpeg -y -i {subtitle_output_path} "
+        f"-vf \"drawtext=text='LUNARTECH.AI':fontcolor=white:fontsize=30:"
+        f"x=w-tw-20:y=20:fontfile=/usr/share/fonts/truetype/custom/Anton-Regular.ttf:"
+        f"box=1:boxcolor=black@0.4:boxborderw=5\" "
+        f"-c:v h264 -preset fast -crf 23 -c:a copy {watermark_output_path}"
+    )
+    subprocess.run(ffmpeg_watermark_cmd, shell=True, check=True)
+
     import boto3
 
     s3_client = boto3.client("s3")
     s3_client.upload_file(
-        subtitle_output_path, os.environ["S3_BUCKET_NAME"], output_s3_key)
+        watermark_output_path, os.environ["S3_BUCKET_NAME"], output_s3_key)
 
 
 @app.cls(gpu="L40S", timeout=3600, retries=0, scaledown_window=20, secrets=[modal.Secret.from_name("ai-podcast-clipper-secret")], volumes={mount_path: volume})
