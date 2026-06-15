@@ -47,6 +47,8 @@ export function DashboardClient({
   const [uploading, setUploading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [processingYoutube, setProcessingYoutube] = useState(false);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -102,6 +104,25 @@ export function DashboardClient({
     }
   };
 
+  const handleYoutubeSubmit = async () => {
+    if (!youtubeUrl) return;
+    setProcessingYoutube(true);
+    try {
+      await processVideo(youtubeUrl, true);
+      setYoutubeUrl("");
+      toast.success("YouTube video queued for processing!", {
+        description: "Check the status below.",
+        duration: 5000,
+      });
+    } catch (error) {
+      toast.error("Failed to process YouTube URL", {
+        description: "Please check the URL and try again.",
+      });
+    } finally {
+      setProcessingYoutube(false);
+    }
+  };
+
   return (
     <div className="mx-auto flex max-w-5xl flex-col space-y-6 px-4 py-8">
       <div className="flex items-center justify-between">
@@ -133,6 +154,29 @@ export function DashboardClient({
               </CardDescription>
             </CardHeader>
             <CardContent>
+              <div className="mb-6">
+                <p className="font-medium mb-2">Process YouTube URL</p>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    value={youtubeUrl}
+                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    className="flex-1 border rounded px-3 py-2 text-sm"
+                    disabled={processingYoutube}
+                  />
+                  <Button onClick={handleYoutubeSubmit} disabled={!youtubeUrl || processingYoutube}>
+                    {processingYoutube ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Process URL"
+                    )}
+                  </Button>
+                </div>
+              </div>
               <Dropzone
                 onDrop={handleDrop}
                 accept={{ "video/mp4": [".mp4"] }}

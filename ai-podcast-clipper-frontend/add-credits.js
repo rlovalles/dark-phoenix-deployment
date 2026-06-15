@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const result = await prisma.user.update({
-    where: { email: 'tk.lunartech@gmail.com' },
+    where: { email: 'rebecca@test.com' },
     data: { credits: { increment: 600 } },
   });
   console.log('Updated user:', result.email, 'Credits:', result.credits);
