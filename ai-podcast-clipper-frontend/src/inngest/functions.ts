@@ -61,7 +61,7 @@ export const processVideo = inngest.createFunction(
 
         await step.fetch(env.PROCESS_VIDEO_ENDPOINT, {
           method: "POST",
-          body: JSON.stringify({ s3_key: s3Key }),
+          body: JSON.stringify({ s3_key: s3Key ?? "", youtube_url: youtubeUrl ?? "" }),
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${env.PROCESS_VIDEO_ENDPOINT_AUTH}`,
@@ -71,7 +71,7 @@ export const processVideo = inngest.createFunction(
         const { clipsFound } = await step.run(
           "create-clips-in-db",
           async () => {
-            const folderPrefix = s3Key.split("/")[0]!;
+            const folderPrefix = s3Key s3Key.split("/")[0]! : uploadedFileId;
 
             const allKeys = await listS3ObjectsByPrefix(folderPrefix);
 
