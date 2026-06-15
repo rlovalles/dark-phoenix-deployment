@@ -71,7 +71,7 @@ export const processVideo = inngest.createFunction(
         const { clipsFound } = await step.run(
           "create-clips-in-db",
           async () => {
-            const folderPrefix = s3Key s3Key.split("/")[0]! : uploadedFileId;
+            const folderPrefix = s3Key ? s3Key.split("/")[0]! : uploadedFileId;
 
             const allKeys = await listS3ObjectsByPrefix(folderPrefix);
 
