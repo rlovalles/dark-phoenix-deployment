@@ -77,3 +77,26 @@ export async function getClipPlayUrl(
     return { succes: false, error: "Failed to generate play URL." };
   }
 }
+
+export async function processYoutubeUrl(youtubeUrl: string) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const uploadedFile = await db.uploadedFile.create({
+    data: {
+      filename: youtubeUrl,
+      s3Key: "",
+      userId: session.user.id,
+      status: "queued",
+      uploaded: false,
+      youtubeUrl: youtubeUrl,
+    },
+  });
+
+  await inngest.send({
+    name: "process-video-events",
+    data: { uploadedFileId: uploadedFile.id, userId: session.user.id, youtubeUrl },
+  });
+
+  revalidatePath("/dashboard");
+}

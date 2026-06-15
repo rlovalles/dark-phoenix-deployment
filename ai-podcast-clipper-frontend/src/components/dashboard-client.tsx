@@ -16,7 +16,7 @@ import { Loader2, UploadCloud } from "lucide-react";
 import { useState } from "react";
 import { generateUploadUrl } from "~/actions/s3";
 import { toast } from "sonner";
-import { processVideo } from "~/actions/generation";
+import { processVideo, processYoutubeUrl } from "~/actions/generation";
 import {
   Table,
   TableBody,
@@ -108,7 +108,7 @@ export function DashboardClient({
     if (!youtubeUrl) return;
     setProcessingYoutube(true);
     try {
-      await processVideo(youtubeUrl, true);
+      await processYoutubeUrl(youtubeUrl);
       setYoutubeUrl("");
       toast.success("YouTube video queued for processing!", {
         description: "Check the status below.",
