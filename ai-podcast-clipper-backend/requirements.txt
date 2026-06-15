@@ -16,3 +16,4 @@ pysubs2
 boto3
 fastapi[standard]
 pyannote-audio>=4.0.0
+yt-dlp

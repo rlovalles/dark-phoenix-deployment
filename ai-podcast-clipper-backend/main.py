@@ -14,7 +14,8 @@ import os
 
 
 class ProcessVideoRequest(BaseModel):
-    s3_key: str
+    s3_key: str = ""
+    youtube_url: str = ""
 
 
 image = (modal.Image.debian_slim(python_version="3.11")
@@ -422,9 +423,15 @@ class AiPodcastClipper:
         # Download video file
         import boto3
 
+        # Download video file
         video_path = base_dir / "input.mp4"
-        s3_client = boto3.client("s3")
-        s3_client.download_file(os.environ["S3_BUCKET_NAME"], s3_key, str(video_path))
+        if request.youtube_url:
+           import subprocess
+           yt_dlp_cmd = f"yt-dlp -o {str(video_path)} --format mp4 '{request.youtube_url}'"
+           subprocess.run(yt_dlp_cmd, shell=True, check=True)
+        else:
+            s3_client = boto3.client("s3")
+            s3_client.download_file(os.environ["S3_BUCKET_NAME"], s3_key, str(video_path))
 
         # 1. Transcription
         transcript_segments_json = self.transcribe_video(base_dir, video_path)
