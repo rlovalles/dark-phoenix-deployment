@@ -427,7 +427,7 @@ class AiPodcastClipper:
         video_path = base_dir / "input.mp4"
         if request.youtube_url:
            import subprocess
-           yt_dlp_cmd = f"yt-dlp -o {str(video_path)} --format mp4 '{request.youtube_url}'"
+           yt_dlp_cmd = f"yt-dlp -o {str(video_path)} --format 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best' --no-check-certificate --user-agent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' '{request.youtube_url}'"
            subprocess.run(yt_dlp_cmd, shell=True, check=True)
         else:
             s3_client = boto3.client("s3")

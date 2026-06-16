@@ -1,0 +1,52 @@
+{
+    "source_video": "https://www.youtube.com/watch?v=YRvf00NooN8",
+    "youtube_video_id": "YRvf00NooN8",
+    "s3_folder": "7da8059b-100e-48f1-a821-47cd2099aabe",
+    "clips": [
+      {
+        "filename": "dark-phoenix_YRvf00NooN8_clip_01_lunartech.mp4",
+        "s3_key": "7da8059b-100e-48f1-a821-47cd2099aabe/clip_0.mp4",
+        "start": 109.337,
+        "end": 162.026,
+        "duration": 52.689,
+        "watermark": true,
+        "captions": true
+      },
+      {
+        "filename": "dark-phoenix_YRvf00NooN8_clip_02_lunartech.mp4",
+        "s3_key": "7da8059b-100e-48f1-a821-47cd2099aabe/clip_1.mp4",
+        "start": 218.971,
+        "end": 278.042,
+        "duration": 59.071,
+        "watermark": true,
+        "captions": true
+      },
+      {
+        "filename": "dark-phoenix_YRvf00NooN8_clip_03_lunartech.mp4",
+        "s3_key": "7da8059b-100e-48f1-a821-47cd2099aabe/clip_2.mp4",
+        "start": 767.384,
+        "end": 826.783,
+        "duration": 59.399,
+        "watermark": true,
+        "captions": true
+      },
+      {
+        "filename": "dark-phoenix_YRvf00NooN8_clip_04_lunartech.mp4",
+        "s3_key": "7da8059b-100e-48f1-a821-47cd2099aabe/clip_3.mp4",
+        "start": 1229.866,
+        "end": 1276.764,
+        "duration": 46.898,
+        "watermark": true,
+        "captions": true
+      },
+      {
+        "filename": "dark-phoenix_YRvf00NooN8_clip_05_lunartech.mp4",
+        "s3_key": "7da8059b-100e-48f1-a821-47cd2099aabe/clip_4.mp4",
+        "start": 1542.768,
+        "end": 1596.627,
+        "duration": 53.859,
+        "watermark": true,
+        "captions": true
+      }
+    ]
+  }

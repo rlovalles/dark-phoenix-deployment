@@ -40,7 +40,7 @@ args = parser.parse_args()
 
 if os.path.isfile(args.pretrainModel) == False: # Download the pretrained model
     Link = "1AbN9fCf9IexMxEKXLQY2KYBlb-IhSEea"
-    cmd = "gdown --id %s -O %s"%(Link, args.pretrainModel)
+    cmd = "gdown %s -O %s"%(Link, args.pretrainModel)
     subprocess.call(cmd, shell=True, stdout=None)
 
 if args.evalCol == True:
