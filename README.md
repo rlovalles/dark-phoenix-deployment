@@ -29,9 +29,9 @@ Passed this stage of the LunarTech.ai technical interview process.
 ## What I Learned
 Getting a distributed cloud pipeline working end to end was 
 the most complex thing I had built at the time. Debugging 
-across multiple services simultaneously — Modal, Supabase, 
-S3, and Inngest all talking to each other — taught me more 
-about production architecture than any single-stack project had.
+across multiple services simultaneously (Modal, Supabase, 
+S3, and Inngest all talking to each other) taught me more 
+about production architecture.
 
 ## License
 See [LICENSE.MD](LICENSE.MD).
