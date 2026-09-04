@@ -5,6 +5,13 @@ project for LunarTech.ai. The platform processes videos, generates
 AI-powered clips, and streams them back to the user through a 
 production-style cloud pipeline.
 
+## Live Demo
+[dark-phoenix-deployment.vercel.app](https://dark-phoenix-deployment.vercel.app)
+
+**Demo credentials:**
+- Email: rebecca@test.com
+- Password: darkphoenix123
+
 ## Tech Stack
 - **Frontend/Framework:** Next.js 15
 - **Database:** Supabase
