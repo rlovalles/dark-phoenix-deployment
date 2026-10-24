@@ -1,7 +1,7 @@
-# Dark Phoenix — AI Video Clipping Platform
+# AI Video Clipping Platform
 
 An AI-powered video clipping platform built as a technical interview 
-project for LunarTech.ai. The platform processes videos, generates 
+project. The platform processes videos, generates 
 AI-powered clips, and streams them back to the user through a 
 production-style cloud pipeline.
 
